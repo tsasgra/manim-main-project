@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/chess/480p15/partial_movie_files/FullChessBoard/2118183852_3434521165_223132457.mp4'
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/chess/480p15/partial_movie_files/FullChessBoard/366519484_3880968470_949057776.mp4'
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/chess/480p15/partial_movie_files/FullChessBoard/366519484_2031807998_3758722123.mp4'
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/chess/480p15/partial_movie_files/FullChessBoard/366519484_2645707024_3015702640.mp4'
