@@ -1,17 +1,14 @@
 from manim import *
+import numpy as np
 
 class ArrowMazePath(Scene):
     def construct(self):
-        # 1. ĐỔI MÀU NỀN ĐỂ TẠO CHIỀU SÂU
-        self.camera.background_color = "#1E1E2E" 
-        
         board = VGroup()
         square_size = 0.7 
         
         # Bảng màu
-        path_color = "#334155"   
-        wall_color = "#2DD4BF"   
-        route_color = "#FBBF24"  # Màu vàng cho mũi tên
+        path_color = "#334155"   # Màu xám cho đường đi
+        wall_color = "#22C55E"   # Màu xanh lá cây chuẩn cho tường
         border_color = "#475569" 
         start_color = "#3B82F6"  
         end_color = "#EF4444"    
@@ -30,21 +27,17 @@ class ArrowMazePath(Scene):
         ]
 
         squares_2d = [[None for _ in range(9)] for _ in range(9)]
+        labels = VGroup()
+        axes = VGroup()
         
-        # 2. KHỞI TẠO LƯỚI
+        # 1. KHỞI TẠO LƯỚI
         for row in range(9):
             for col in range(9):
                 sq = Square(side_length=square_size)
                 sq.set_stroke(width=1.5, color=border_color)
                 
-                if (row, col) == (0, 0):
-                    target_color = start_color
-                elif (row, col) == (8, 8):
-                    target_color = end_color
-                else:
-                    target_color = wall_color if maze_map[row][col] == 1 else path_color
-                    
-                sq.set_fill(target_color, opacity=1) 
+                # Ban đầu tất cả các ô đều mang màu xám (vùng có thể đi)
+                sq.set_fill(path_color, opacity=1) 
                 
                 x = (col - 4) * square_size
                 y = (row - 4) * square_size
@@ -53,16 +46,72 @@ class ArrowMazePath(Scene):
                 board.add(sq)
                 squares_2d[row][col] = sq
 
-        # Hiệu ứng vẽ lưới
-        self.play(DrawBorderThenFill(board, lag_ratio=0.01), run_time=3)
+        # Tọa độ gốc tọa độ (góc dưới bên trái của bảng)
+        origin_pt = np.array([-4.5 * square_size, -4.5 * square_size, 0])
+
+        # 2. TẠO TRỤC TỌA ĐỘ OX, OY VÀ ĐÁNH SỐ
+        # Thêm số 0 ở gốc tọa độ
+        label_0 = Text("0", font_size=22, color=WHITE).next_to(origin_pt, DL, buff=0.15)
+        labels.add(label_0)
+
+        # Đánh số 1 đến 9 căn giữa phía ngoài các ô vuông
+        for i in range(1, 10):
+            # Số trục X (Dịch (i - 0.5) để vào chính giữa cột)
+            x_pos = origin_pt + RIGHT * ((i - 0.5) * square_size)
+            x_label = Text(str(i), font_size=22, color=WHITE).next_to(x_pos, DOWN, buff=0.15)
+            labels.add(x_label)
+            
+            # Số trục Y (Dịch (i - 0.5) để vào chính giữa hàng)
+            y_pos = origin_pt + UP * ((i - 0.5) * square_size)
+            y_label = Text(str(i), font_size=22, color=WHITE).next_to(y_pos, LEFT, buff=0.15)
+            labels.add(y_label)
+
+        # Vẽ trục mũi tên Ox, Oy
+        x_arrow = Arrow(start=origin_pt, end=origin_pt + RIGHT * (9.8 * square_size), buff=0, stroke_width=2, max_tip_length_to_length_ratio=0.04, color=WHITE)
+        x_text = Text("x", font_size=24, slant=ITALIC, color=WHITE).next_to(x_arrow, RIGHT, buff=0.1)
         
-        # Gắn chữ A, B 
+        y_arrow = Arrow(start=origin_pt, end=origin_pt + UP * (9.8 * square_size), buff=0, stroke_width=2, max_tip_length_to_length_ratio=0.04, color=WHITE)
+        y_text = Text("y", font_size=24, slant=ITALIC, color=WHITE).next_to(y_arrow, UP, buff=0.1)
+        
+        axes.add(x_arrow, x_text, y_arrow, y_text)
+
+        # Sắp xếp lại thứ tự các ô trong board từ Trái-Trên xuống Phải-Dưới
+        board.sort(lambda p: p[0] - p[1])
+
+        # Bảng xuất hiện trước trong 1.7 giây
+        self.play(DrawBorderThenFill(board, lag_ratio=0.05), run_time=3)
+        
+        # Sau đó hệ trục và các con số mới xuất hiện 
+        self.play(FadeIn(labels, shift=UP*0.2), FadeIn(axes), run_time=4.5)
+        
+        # Chờ đúng 10 giây trước khi chuyển màu chướng ngại vật
+        self.wait(10)
+        
+        # 3. CHUYỂN MÀU CÁC Ô CHƯỚNG NGẠI VẬT SANG XANH LÁ
+        wall_animations = []
+        for row in range(9):
+            for col in range(9):
+                if maze_map[row][col] == 1:
+                    wall_animations.append(squares_2d[row][col].animate.set_fill(wall_color))
+        
+        self.play(*wall_animations, run_time=2)
+        self.wait(5)
+
+        # 4. XUẤT HIỆN A VÀ B
+        squares_2d[0][0].set_fill(start_color)
+        squares_2d[8][8].set_fill(end_color)
+        
         label_a = Text("A", font_size=32, color=WHITE, weight=BOLD).move_to(squares_2d[0][0].get_center())
         label_b = Text("B", font_size=32, color=WHITE, weight=BOLD).move_to(squares_2d[8][8].get_center())
-        self.play(Write(label_a), Write(label_b))
-        self.wait(0.5)
+        
+        self.play(
+            FadeIn(label_a, shift=UP),
+            FadeIn(label_b, shift=UP),
+            run_time=3
+        )
+        self.wait(6)
 
-        # 3. AI DÒ ĐƯỜNG NGẮN NHẤT (BFS)
+        # 5. AI DÒ ĐƯỜNG NGẮN NHẤT (BFS)
         queue = [[(0, 0)]]
         visited = set([(0, 0)])
         shortest_path = []
@@ -81,27 +130,11 @@ class ArrowMazePath(Scene):
                         visited.add((nr, nc))
                         queue.append(path + [(nr, nc)])
 
-        # 4. VẼ ĐƯỜNG ĐI BẰNG CÁC MŨI TÊN TO HƠN
-        arrows = VGroup()
-        for i in range(len(shortest_path) - 1):
-            r1, c1 = shortest_path[i]
-            r2, c2 = shortest_path[i+1]
-            
-            start_point = squares_2d[r1][c1].get_center()
-            end_point = squares_2d[r2][c2].get_center()
-            
-            # Tinh chỉnh thông số mũi tên để to và rõ hơn
-            arrow = Arrow(
-                start=start_point, 
-                end=end_point, 
-                color=route_color, 
-                stroke_width=8,                          # Tăng độ dày thân (từ 5 lên 8)
-                max_tip_length_to_length_ratio=0.35,     # Tỷ lệ đầu mũi tên to hơn (từ 0.25 lên 0.35)
-                max_stroke_width_to_length_ratio=10,     # Giúp thân không bị teo lại khi khoảng cách ngắn
-                buff=0.15                                # Giảm khoảng hở một chút để mũi tên dài hơn
-            )
-            arrows.add(arrow)
+        # 6. CHỮ A DI CHUYỂN ĐẾN B
+        path_points = [squares_2d[r][c].get_center() for r, c in shortest_path]
+        route_path = VMobject()
+        route_path.set_points_as_corners(path_points)
 
-        # Hiệu ứng các mũi tên xuất hiện nối tiếp nhau
-        self.play(Create(arrows, lag_ratio=1), run_time=4.5)
+        self.play(MoveAlongPath(label_a, route_path), run_time=12, rate_func=linear)
+        
         self.wait(2)
