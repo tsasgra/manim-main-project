@@ -81,7 +81,7 @@ class ArrowMazePath(Scene):
                         visited.add((nr, nc))
                         queue.append(path + [(nr, nc)])
 
-        # 4. VẼ ĐƯỜNG ĐI BẰNG CÁC MŨI TÊN (ARROWS)
+        # 4. VẼ ĐƯỜNG ĐI BẰNG CÁC MŨI TÊN TO HƠN
         arrows = VGroup()
         for i in range(len(shortest_path) - 1):
             r1, c1 = shortest_path[i]
@@ -90,14 +90,15 @@ class ArrowMazePath(Scene):
             start_point = squares_2d[r1][c1].get_center()
             end_point = squares_2d[r2][c2].get_center()
             
-            # Khởi tạo mũi tên nối 2 ô
+            # Tinh chỉnh thông số mũi tên để to và rõ hơn
             arrow = Arrow(
                 start=start_point, 
                 end=end_point, 
                 color=route_color, 
-                stroke_width=5,
-                max_tip_length_to_length_ratio=0.25, # Giữ đầu mũi tên cân đối khi khoảng cách ngắn
-                buff=0.2 # Tạo khoảng hở ở 2 đầu mũi tên để không đè lên chữ A và B
+                stroke_width=8,                          # Tăng độ dày thân (từ 5 lên 8)
+                max_tip_length_to_length_ratio=0.35,     # Tỷ lệ đầu mũi tên to hơn (từ 0.25 lên 0.35)
+                max_stroke_width_to_length_ratio=10,     # Giúp thân không bị teo lại khi khoảng cách ngắn
+                buff=0.15                                # Giảm khoảng hở một chút để mũi tên dài hơn
             )
             arrows.add(arrow)
 

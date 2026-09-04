@@ -1,0 +1,6 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/coordinate_in_game/1080p60/partial_movie_files/ArrowMazePath/989309249_2564620610_223132457.mp4'
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/coordinate_in_game/1080p60/partial_movie_files/ArrowMazePath/1929938186_3446538172_3034513780.mp4'
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/coordinate_in_game/1080p60/partial_movie_files/ArrowMazePath/1929938186_3880968470_1062202514.mp4'
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/coordinate_in_game/1080p60/partial_movie_files/ArrowMazePath/1929938186_2090286095_3228834991.mp4'
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/coordinate_in_game/1080p60/partial_movie_files/ArrowMazePath/1929938186_2645707024_3840500607.mp4'
