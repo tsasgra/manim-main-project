@@ -95,7 +95,7 @@ class ArrowMazePath(Scene):
                     wall_animations.append(squares_2d[row][col].animate.set_fill(wall_color))
         
         self.play(*wall_animations, run_time=2)
-        self.wait(5)
+        self.wait(7)
 
         # 4. XUẤT HIỆN A VÀ B
         squares_2d[0][0].set_fill(start_color)
@@ -105,11 +105,11 @@ class ArrowMazePath(Scene):
         label_b = Text("B", font_size=32, color=WHITE, weight=BOLD).move_to(squares_2d[8][8].get_center())
         
         self.play(
-            FadeIn(label_a, shift=UP),
-            FadeIn(label_b, shift=UP),
+            FadeIn(label_a),
+            FadeIn(label_b),
             run_time=3
         )
-        self.wait(6)
+        self.wait(9)
 
         # 5. AI DÒ ĐƯỜNG NGẮN NHẤT (BFS)
         queue = [[(0, 0)]]
