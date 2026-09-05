@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/begin/1080p60/partial_movie_files/HienThiAnh/3373382780_1048417470_223132457.mp4'
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/begin/1080p60/partial_movie_files/HienThiAnh/4234509111_2645707024_4056279447.mp4'
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/begin/1080p60/partial_movie_files/HienThiAnh/4234509111_3528897024_3424420569.mp4'
+file 'file:C:/Users/ASUS/manimations/coordinate  in game/media/videos/begin/1080p60/partial_movie_files/HienThiAnh/4234509111_2645707024_1579160496.mp4'
