@@ -3,12 +3,10 @@ import numpy as np
 
 class CombinedCoordinateScene(Scene):
     def construct(self):
-        # Thiết lập phông chữ hỗ trợ tiếng Việt (Arial, Tahoma, hoặc Times New Roman)
+        # Thiết lập phông chữ hỗ trợ tiếng Việt
         self.vn_font = "Arial"
         
-        # ==========================================
         # Thêm 4 giây nền đen ở đoạn mở đầu video
-        # ==========================================
         self.wait(4)
         
         # Chạy Phần 1: Mê cung
@@ -100,8 +98,10 @@ class CombinedCoordinateScene(Scene):
 
         board.sort(lambda p: p[0] - p[1])
         self.play(DrawBorderThenFill(board, lag_ratio=0.05), run_time=3)
-        self.play(FadeIn(labels, shift=UP*0.2), FadeIn(axes), run_time=2)
-        self.wait(2)
+        self.play(FadeIn(labels, shift=UP*0.2), FadeIn(axes), run_time=4.5)
+        
+        # THỜI GIAN CHỜ THEO ĐÚNG KỊCH BẢN GỐC
+        self.wait(10)
         
         # 3. CHUYỂN MÀU CHƯỚNG NGẠI VẬT
         wall_animations = []
@@ -111,7 +111,9 @@ class CombinedCoordinateScene(Scene):
                     wall_animations.append(squares_2d[row][col].animate.set_fill(wall_color))
         
         self.play(*wall_animations, run_time=2)
-        self.wait(1)
+        
+        # THỜI GIAN CHỜ THEO ĐÚNG KỊCH BẢN GỐC
+        self.wait(7)
 
         # 4. XUẤT HIỆN A VÀ B
         squares_2d[0][0].set_fill(start_color)
@@ -120,8 +122,14 @@ class CombinedCoordinateScene(Scene):
         label_a = Text("A", font=self.vn_font, font_size=32, color=WHITE, weight=BOLD).move_to(squares_2d[0][0].get_center())
         label_b = Text("B", font=self.vn_font, font_size=32, color=WHITE, weight=BOLD).move_to(squares_2d[8][8].get_center())
         
-        self.play(FadeIn(label_a), FadeIn(label_b), run_time=1.5)
-        self.wait(1)
+        self.play(
+            FadeIn(label_a),
+            FadeIn(label_b),
+            run_time=3
+        )
+        
+        # THỜI GIAN CHỜ THEO ĐÚNG KỊCH BẢN GỐC
+        self.wait(9)
 
         # 5. DÒ ĐƯỜNG NGẮN NHẤT (BFS)
         queue = [[(0, 0)]]
@@ -142,12 +150,12 @@ class CombinedCoordinateScene(Scene):
                         visited.add((nr, nc))
                         queue.append(path + [(nr, nc)])
 
-        # 6. DI CHUYỂN
+        # 6. DI CHUYỂN (Chữ A di chuyển tới B trong 12 giây)
         if shortest_path:
             path_points = [squares_2d[r][c].get_center() for r, c in shortest_path]
             route_path = VMobject()
             route_path.set_points_as_corners(path_points)
-            self.play(MoveAlongPath(label_a, route_path), run_time=5, rate_func=linear)
+            self.play(MoveAlongPath(label_a, route_path), run_time=12, rate_func=linear)
             
         self.wait(2)
 
@@ -241,11 +249,13 @@ class CombinedCoordinateScene(Scene):
             all_pieces.add(p_pawn_b)
             pieces_dict[(col, 6)] = p_pawn_b
 
-        # Hoạt ảnh bàn cờ
+        # Hoạt ảnh xuất hiện bàn cờ
         self.play(FadeIn(board_group), FadeIn(all_pieces, shift=DOWN * 0.3), run_time=2)
         self.wait(1)
-        self.play(FadeIn(labels), run_time=1.5)
-        self.wait(2)
+        
+        self.play(FadeIn(labels), run_time=2)
+        self.wait(2.5)
+        self.wait(5)
 
         # 5. Vẽ trục tọa độ Oxy
         origin_x = -4 * square_size - border_width - 0.4
@@ -270,10 +280,10 @@ class CombinedCoordinateScene(Scene):
             axes_group.add(tick)
 
         self.play(FadeIn(axes_group), run_time=2)
-        self.wait(3)
+        self.wait(7)
 
         self.play(FadeOut(axes_group), run_time=1.5)
-        self.wait(1)
+        self.wait(2.5)
 
         # Di chuyển quân tốt D2 -> D4
         if (3, 1) in pieces_dict:
@@ -287,7 +297,8 @@ class CombinedCoordinateScene(Scene):
             pieces_dict[(3, 3)] = pawn_d2
             del pieces_dict[(3, 1)]
             
-        self.wait(3)
+        self.wait(6)
+        self.wait(8)
 
 
     # ==========================================
@@ -306,7 +317,7 @@ class CombinedCoordinateScene(Scene):
         )
         axes_labels = plane.get_axis_labels(x_label="x", y_label="y")
         
-        self.play(Create(plane), run_time=1.5)
+        self.play(Create(plane), run_time=1)
         self.play(Write(axes_labels), run_time=0.5)
         self.wait(0.5)
 
@@ -343,7 +354,7 @@ class CombinedCoordinateScene(Scene):
         # Fade out để nhường chỗ cho hình ảnh cuối
         self.play(FadeOut(Group(*self.mobjects)))
 
-        # 4. Hiển thị hình ảnh kết thúc
+        # 4. Hiển thị hình ảnh kết thúc trong 8s như nguyên gốc
         image_path = r"C:\Users\ASUS\manimations\coordinate  in game\picture\thinking_emotion.jpg"
         
         try:
